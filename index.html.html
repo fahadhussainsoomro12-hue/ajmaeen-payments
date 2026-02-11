@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajmaeen Travel & Tours | Premium Payment Management System</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* ========== PREMIUM VARIABLES ========== */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --dark: #0f172a;
+            --dark-gray: #334155;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --lighter-gray: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius-sm: 6px;
+            --radius: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        /* ========== PREMIUM LOGIN PAGE ========== */
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            width: 440px;
+            max-width: 95%;
+            padding: 48px 40px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-logo i {
+            font-size: 48px;
+            color: white;
+        }
+
+        .login-container h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-subtitle {
+            color: var(--gray);
+            font-size: 15px;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .login-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--dark);
+            transition: var(--transition);
+            background: var(--lighter-gray);
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .login-form input::placeholder {
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-btn i {
+            font-size: 18px;
+        }
+
+        .login-footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .staff-badge {
+            background: var(--light-gray);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .staff-badge i {
+            color: var(--primary);
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+        }
+
+        /* ========== DASHBOARD STYLES ========== */
+        .dashboard-container {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--lighter-gray);
+        }
+
+        /* ===== PREMIUM SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--lighter-gray) 100%);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.03);
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        .sidebar-header h3 {
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar-header p {
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            padding: 24px 16px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: var(--dark-gray);
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 6px 0;
+            border-radius: var(--radius);
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            width: 24px;
+            margin-right: 14px;
+            font-size: 18px;
+        }
+
+        .menu-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            height: 100vh;
+            overflow-y: auto;
+            background: var(--lighter-gray);
+            transition: var(--transition);
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn {
+            background: var(--lighter-gray);
+            color: var(--danger);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .content-area {
+            padding: 32px;
+            display: none;
+        }
+
+        .content-area.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== DASHBOARD CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-info h4 {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info h2 {
+            color: var(--dark);
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-light);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        /* ===== FORMS ===== */
+        .form-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-title i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            background: var(--lighter-gray);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+            color: white;
+        }
+
+        /* ===== TABLE ===== */
+        .table-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--lighter-gray);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 18px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 14px;
+            width: 240px;
+            background: transparent;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            background: var(--lighter-gray);
+            color: var(--dark-gray);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .status-partial {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                width: 280px;
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-container {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========== PREMIUM LOGIN PAGE ========== -->
+    <div id="loginPage" class="login-container">
+        <div class="login-logo">
+            <i class="fas fa-calculus"></i>
+        </div>
+
+        <span class="login-badge">
+            <i class="fas fa-shield-alt"></i> Authorized Personnel Only
+        </span>
+
+        <h2>Ajmaeen Travel & Tours</h2>
+        <div class="login-subtitle">Premium Payment Management System</div>
+
+        <div class="login-form">
+            <div class="input-group">
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" id="username" placeholder="Username">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="password" placeholder="Password">
+            </div>
+
+            <button onclick="login()" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                Secure Login
+            </button>
+
+            <div id="loginError" class="error-msg" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            <div class="staff-badge">
+                <i class="fas fa-user-tie"></i> Admin 1
+            </div>
+            <div class="staff-badge">
+                <i class="fas fa-user-tie"></i> Admin 2
+            </div>
+            <div class="staff-badge">
+                <i class="fas fa-user-tie"></i> Admin 3
+            </div>
+            <div class="staff-badge">
+                <i class="fas fa-user-tie"></i> Admin 4
+            </div>
+        </div>
+
+        <div
+            style="margin-top: 24px; color: var(--gray); font-size: 12px; display: flex; justify-content: center; gap: 20px;">
+            <span><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Encrypted</span>
+            <span><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Secure</span>
+            <span><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Private</span>
+        </div>
+    </div>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div id="dashboardPage" class="dashboard-container">
+        <!-- Premium Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Ajmaeen <span style="color: var(--primary);">Payments</span></h3>
+                <p>Management System</p>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item" onclick="showSection('addClient')">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Client Payment</span>
+                </div>
+                <div class="menu-item" onclick="showSection('expense')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Expense Out</span>
+                </div>
+                <div class="menu-item" onclick="showSection('calculator')">
+                    <i class="fas fa-calculator"></i>
+                    <span>Calculator</span>
+                </div>
+                <div class="menu-item" onclick="showSection('records')">
+                    <i class="fas fa-table"></i>
+                    <span>Records</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title" id="pageTitle">Dashboard</div>
+                <div class="user-info">
+                    <div class="user-badge" id="loggedInUser">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Admin</span>
+                    </div>
+                    <button onclick="logout()" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboardSection" class="content-area active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Total Received</h4>
+                            <h2 id="totalReceived">PKR 0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Pending Payments</h4>
+                            <h2 id="totalPending">PKR 0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Total Expenses</h4>
+                            <h2 id="totalExpenses">PKR 0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Total Profit</h4>
+                            <h2 id="totalProfit">PKR 0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-trend-up"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                    <div
+                        style="background: white; border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                        <h3 style="color: var(--dark); margin-bottom: 20px; font-size: 18px;">Today's Summary</h3>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border);">
+                            <span style="color: var(--gray);">Today's Received:</span>
+                            <span style="font-weight: 700; color: var(--secondary);" id="todayReceived">PKR 0</span>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border);">
+                            <span style="color: var(--gray);">Today's Expenses:</span>
+                            <span style="font-weight: 700; color: var(--danger);" id="todayExpenses">PKR 0</span>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0;">
+                            <span style="color: var(--gray);">Today's Profit:</span>
+                            <span style="font-weight: 700; color: var(--primary); font-size: 20px;" id="todayProfit">PKR
+                                0</span>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: white; border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                        <h3 style="color: var(--dark); margin-bottom: 20px; font-size: 18px;">Quick Actions</h3>
+                        <button onclick="showSection('addClient')" class="btn btn-primary"
+                            style="width: 100%; margin-bottom: 12px;">
+                            <i class="fas fa-plus-circle"></i> Add New Payment
+                        </button>
+                        <button onclick="showSection('expense')" class="btn btn-warning"
+                            style="width: 100%; margin-bottom: 12px;">
+                            <i class="fas fa-minus-circle"></i> Add Expense
+                        </button>
+                        <button onclick="showSection('records')" class="btn btn-success" style="width: 100%;">
+                            <i class="fas fa-eye"></i> View Records
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Client Section -->
+            <div id="addClientSection" class="content-area">
+                <div class="form-container">
+                    <div class="form-title">
+                        <i class="fas fa-user-plus"></i>
+                        Add New Client Payment
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Client Name *</label>
+                            <input type="text" id="clientName" placeholder="Enter client full name">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" id="clientPhone" placeholder="03XX-XXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label>Package Name</label>
+                            <select id="packageName">
+                                <option value="Economy Umrah">Economy Umrah</option>
+                                <option value="Standard Umrah">Standard Umrah</option>
+                                <option value="VIP Umrah">VIP Umrah</option>
+                                <option value="Family Package">Family Package</option>
+                                <option value="Hajj Package">Hajj Package</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Amount (PKR)</label>
+                            <input type="number" id="totalAmount" placeholder="0" onkeyup="calculateRemaining()">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Received (PKR)</label>
+                            <input type="number" id="amountReceived" placeholder="0" onkeyup="calculateRemaining()">
+                        </div>
+                        <div class="form-group">
+                            <label>Remaining Balance</label>
+                            <input type="number" id="remainingBalance" placeholder="Auto calculated" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Profit (PKR)</label>
+                            <input type="number" id="profit" placeholder="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Status</label>
+                            <select id="paymentStatus">
+                                <option value="Paid">Paid</option>
+                                <option value="Pending" selected>Pending</option>
+                                <option value="Partial">Partial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="dueDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="notes" rows="3" placeholder="Additional notes..."></textarea>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                        <button onclick="clearClientForm()" class="btn"
+                            style="background: var(--light-gray); color: var(--gray);">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                        <button onclick="saveClientPayment()" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Section -->
+            <div id="expenseSection" class="content-area">
+                <div class="form-container">
+                    <div class="form-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Add Expense / Payment Out
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Pay To *</label>
+                            <input type="text" id="payTo" placeholder="Recipient name">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (PKR)</label>
+                            <input type="number" id="expenseAmount" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <input type="text" id="expenseReason" placeholder="Purpose of payment">
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="expenseDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="expenseNotes" rows="3" placeholder="Additional details..."></textarea>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                        <button onclick="clearExpenseForm()" class="btn"
+                            style="background: var(--light-gray); color: var(--gray);">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                        <button onclick="saveExpense()" class="btn btn-warning">
+                            <i class="fas fa-save"></i> Save Expense
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator Section -->
+            <div id="calculatorSection" class="content-area">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Profit Calculator -->
+                    <div
+                        style="background: white; border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                        <h3
+                            style="color: var(--dark); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                            Profit Calculator
+                        </h3>
+
+                        <div class="form-group">
+                            <label>Total Revenue (PKR)</label>
+                            <input type="number" id="revenueCalc" placeholder="0" onkeyup="calcProfit()">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Expenses (PKR)</label>
+                            <input type="number" id="expenseCalc" placeholder="0" onkeyup="calcProfit()">
+                        </div>
+                        <div class="form-group">
+                            <label>Profit</label>
+                            <input type="number" id="profitCalc" readonly
+                                style="background: var(--light-gray); font-weight: 700; color: var(--primary); font-size: 20px;">
+                        </div>
+                    </div>
+
+                    <!-- Manual Calculator -->
+                    <div
+                        style="background: white; border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                        <h3
+                            style="color: var(--dark); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-calculator" style="color: var(--primary);"></i>
+                            Manual Calculator
+                        </h3>
+
+                        <div style="background: var(--lighter-gray); padding: 20px; border-radius: var(--radius); text-align: right; font-size: 36px; font-weight: 700; color: var(--dark); margin-bottom: 24px; border: 2px solid var(--border);"
+                            id="calcDisplay">
+                            0
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                            <button onclick="calcAppend('7')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">7</button>
+                            <button onclick="calcAppend('8')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">8</button>
+                            <button onclick="calcAppend('9')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">9</button>
+                            <button onclick="calcAppend('+')"
+                                style="padding: 16px; background: var(--primary-light); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">+</button>
+
+                            <button onclick="calcAppend('4')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">4</button>
+                            <button onclick="calcAppend('5')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">5</button>
+                            <button onclick="calcAppend('6')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">6</button>
+                            <button onclick="calcAppend('-')"
+                                style="padding: 16px; background: var(--primary-light); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">-</button>
+
+                            <button onclick="calcAppend('1')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">1</button>
+                            <button onclick="calcAppend('2')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">2</button>
+                            <button onclick="calcAppend('3')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">3</button>
+                            <button onclick="calcAppend('*')"
+                                style="padding: 16px; background: var(--primary-light); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">×</button>
+
+                            <button onclick="calcClear()"
+                                style="padding: 16px; background: var(--danger); color: white; border: none; border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">C</button>
+                            <button onclick="calcAppend('0')"
+                                style="padding: 16px; background: var(--lighter-gray); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">0</button>
+                            <button onclick="calcEqual()"
+                                style="padding: 16px; background: var(--secondary); color: white; border: none; border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">=</button>
+                            <button onclick="calcAppend('/')"
+                                style="padding: 16px; background: var(--primary-light); border: 1px solid var(--border); border-radius: var(--radius); font-size: 18px; font-weight: 600; cursor: pointer;">÷</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Records Section -->
+            <div id="recordsSection" class="content-area">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 style="color: var(--dark); font-size: 20px; font-weight: 700;">
+                            <i class="fas fa-database" style="color: var(--primary); margin-right: 10px;"></i>
+                            Payment Records
+                        </h3>
+
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div class="search-box">
+                                <i class="fas fa-search" style="color: var(--gray);"></i>
+                                <input type="text" id="searchInput" placeholder="Search client..."
+                                    onkeyup="searchRecords()">
+                            </div>
+
+                            <select id="filterDate" onchange="filterRecords()"
+                                style="padding: 12px 20px; border: 2px solid var(--border); border-radius: var(--radius); background: white; font-size: 14px; font-weight: 500;">
+                                <option value="all">📅 All Time</option>
+                                <option value="today">📅 Today</option>
+                                <option value="week">📅 This Week</option>
+                                <option value="month">📅 This Month</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table id="recordsTable">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Phone</th>
+                                <th>Package</th>
+                                <th>Total</th>
+                                <th>Received</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 60px; color: var(--gray);">
+                                    <i class="fas fa-database"
+                                        style="font-size: 48px; margin-bottom: 16px; color: var(--primary-light);"></i>
+                                    <br>No payment records found. Add your first payment!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--dark); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-edit" style="color: var(--primary);"></i>
+                Edit Payment Record
+            </h3>
+            <div id="editFormContent"></div>
+            <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                <button onclick="closeEditModal()" class="btn"
+                    style="background: var(--light-gray); color: var(--gray);">
+                    Cancel
+                </button>
+                <button onclick="updateRecord()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 🔥 FIREBASE CONFIGURATION ==========
+        // IMPORTANT: Replace with your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("✅ Firebase initialized");
+        } catch (error) {
+            console.log("Firebase already initialized or error:", error);
+        }
+
+        const db = firebase.firestore();
+
+        // ========== AUTHORIZED USERS ==========
+        const authorizedUsers = [
+            { username: 'admin1', password: 'admin123', name: 'Admin 1' },
+            { username: 'admin2', password: 'admin123', name: 'Admin 2' },
+            { username: 'admin3', password: 'admin123', name: 'Admin 3' },
+            { username: 'admin4', password: 'admin123', name: 'Admin 4' }
+        ];
+
+        let currentUser = null;
+        let editingId = null;
+
+        // ========== LOGIN FUNCTION ==========
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorDiv.style.display = 'flex';
+                errorDiv.querySelector('span').innerText = 'Please enter username and password';
+                return;
+            }
+
+            const user = authorizedUsers.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                document.getElementById('loggedInUser').innerHTML = `
+                    <i class="fas fa-user-circle"></i>
+                    <span>${user.name}</span>
+                `;
+
+                errorDiv.style.display = 'none';
+
+                setDefaultDates();
+                loadDashboardData();
+                loadAllPayments();
+            } else {
+                errorDiv.style.display = 'flex';
+                errorDiv.querySelector('span').innerText = 'Invalid credentials! Authorized staff only.';
+            }
+        }
+
+        // ========== LOGOUT ==========
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // ========== SECTION NAVIGATION ==========
+        function showSection(section) {
+            document.querySelectorAll('.content-area').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(section + 'Section').classList.add('active');
+
+            document.querySelectorAll('.menu-item').forEach(el => {
+                if (el.innerHTML.includes(section === 'addClient' ? 'Add Client' :
+                    section === 'expense' ? 'Expense' :
+                        section === 'calculator' ? 'Calculator' :
+                            section === 'records' ? 'Records' : 'Dashboard')) {
+                    el.classList.add('active');
+                }
+            });
+
+            const titles = {
+                dashboard: 'Dashboard',
+                addClient: 'Add Client Payment',
+                expense: 'Expense Out',
+                calculator: 'Calculator',
+                records: 'Payment Records'
+            };
+            document.getElementById('pageTitle').innerText = titles[section];
+
+            if (section === 'records') loadAllPayments();
+            if (section === 'dashboard') loadDashboardData();
+        }
+
+        // ========== CALCULATIONS ==========
+        function calculateRemaining() {
+            const total = parseFloat(document.getElementById('totalAmount').value) || 0;
+            const received = parseFloat(document.getElementById('amountReceived').value) || 0;
+            document.getElementById('remainingBalance').value = total - received;
+        }
+
+        function calcProfit() {
+            const revenue = parseFloat(document.getElementById('revenueCalc').value) || 0;
+            const expense = parseFloat(document.getElementById('expenseCalc').value) || 0;
+            document.getElementById('profitCalc').value = revenue - expense;
+        }
+
+        // ========== CALCULATOR ==========
+        function calcAppend(value) {
+            const display = document.getElementById('calcDisplay');
+            if (display.innerText === '0') display.innerText = value;
+            else display.innerText += value;
+        }
+
+        function calcClear() {
+            document.getElementById('calcDisplay').innerText = '0';
+        }
+
+        function calcEqual() {
+            try {
+                const display = document.getElementById('calcDisplay');
+                display.innerText = eval(display.innerText.replace('×', '*').replace('÷', '/'));
+            } catch {
+                document.getElementById('calcDisplay').innerText = 'Error';
+            }
+        }
+
+        // ========== SET DEFAULT DATES ==========
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 7);
+
+            if (document.getElementById('dueDate')) {
+                document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            }
+            if (document.getElementById('expenseDate')) {
+                document.getElementById('expenseDate').value = today;
+            }
+        }
+
+        // ========== SAVE CLIENT PAYMENT ==========
+        async function saveClientPayment() {
+            const clientName = document.getElementById('clientName').value;
+
+            if (!clientName) {
+                alert('❌ Please enter client name');
+                return;
+            }
+
+            const paymentData = {
+                clientName: clientName,
+                phone: document.getElementById('clientPhone').value || '-',
+                package: document.getElementById('packageName').value,
+                totalAmount: parseFloat(document.getElementById('totalAmount').value) || 0,
+                amountReceived: parseFloat(document.getElementById('amountReceived').value) || 0,
+                remainingBalance: parseFloat(document.getElementById('remainingBalance').value) || 0,
+                profit: parseFloat(document.getElementById('profit').value) || 0,
+                status: document.getElementById('paymentStatus').value,
+                dueDate: document.getElementById('dueDate').value,
+                notes: document.getElementById('notes').value || '-',
+                createdBy: currentUser?.name || 'admin',
+                createdAt: new Date().toISOString(),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                await db.collection('payments').add(paymentData);
+                alert('✅ Payment saved successfully! All admins can see this now.');
+                clearClientForm();
+                loadDashboardData();
+                loadAllPayments();
+                showSection('records');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error saving payment: ' + error.message);
+            }
+        }
+
+        // ========== SAVE EXPENSE ==========
+        async function saveExpense() {
+            const payTo = document.getElementById('payTo').value;
+
+            if (!payTo) {
+                alert('❌ Please enter recipient name');
+                return;
+            }
+
+            const expenseData = {
+                payTo: payTo,
+                amount: parseFloat(document.getElementById('expenseAmount').value) || 0,
+                reason: document.getElementById('expenseReason').value || '-',
+                date: document.getElementById('expenseDate').value,
+                notes: document.getElementById('expenseNotes').value || '-',
+                createdBy: currentUser?.name || 'admin',
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                await db.collection('expenses').add(expenseData);
+                alert('✅ Expense saved successfully!');
+                clearExpenseForm();
+                loadDashboardData();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ========== LOAD DASHBOARD ==========
+        async function loadDashboardData() {
+            try {
+                const paymentsSnap = await db.collection('payments').get();
+                let totalReceived = 0, totalPending = 0, todayReceived = 0;
+                const today = new Date().toISOString().split('T')[0];
+
+                paymentsSnap.forEach(doc => {
+                    const data = doc.data();
+                    totalReceived += data.amountReceived || 0;
+                    if (data.status === 'Pending' || data.status === 'Partial') {
+                        totalPending += data.remainingBalance || 0;
+                    }
+                    if (data.createdAt?.split('T')[0] === today) {
+                        todayReceived += data.amountReceived || 0;
+                    }
+                });
+
+                const expensesSnap = await db.collection('expenses').get();
+                let totalExpenses = 0, todayExpenses = 0;
+
+                expensesSnap.forEach(doc => {
+                    const data = doc.data();
+                    totalExpenses += data.amount || 0;
+                    if (data.date === today) {
+                        todayExpenses += data.amount || 0;
+                    }
+                });
+
+                const totalProfit = totalReceived - totalExpenses;
+                const todayProfit = todayReceived - todayExpenses;
+
+                document.getElementById('totalReceived').innerHTML = 'PKR ' + totalReceived.toLocaleString();
+                document.getElementById('totalPending').innerHTML = 'PKR ' + totalPending.toLocaleString();
+                document.getElementById('totalExpenses').innerHTML = 'PKR ' + totalExpenses.toLocaleString();
+                document.getElementById('totalProfit').innerHTML = 'PKR ' + totalProfit.toLocaleString();
+                document.getElementById('todayReceived').innerHTML = 'PKR ' + todayReceived.toLocaleString();
+                document.getElementById('todayExpenses').innerHTML = 'PKR ' + todayExpenses.toLocaleString();
+                document.getElementById('todayProfit').innerHTML = 'PKR ' + todayProfit.toLocaleString();
+
+            } catch (error) {
+                console.error('Dashboard error:', error);
+            }
+        }
+
+        // ========== LOAD ALL PAYMENTS ==========
+        async function loadAllPayments() {
+            try {
+                const snapshot = await db.collection('payments').orderBy('createdAt', 'desc').get();
+                const payments = [];
+                snapshot.forEach(doc => payments.push({ id: doc.id, ...doc.data() }));
+                displayPayments(payments);
+            } catch (error) {
+                console.error('Error loading payments:', error);
+            }
+        }
+
+        function displayPayments(payments) {
+            const tbody = document.getElementById('tableBody');
+
+            if (!payments || payments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 60px;"><i class="fas fa-database" style="font-size: 48px; color: var(--primary-light); margin-bottom: 16px;"></i><br>No payment records found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            payments.forEach(p => {
+                const statusClass = p.status === 'Paid' ? 'status-paid' : p.status === 'Pending' ? 'status-pending' : 'status-partial';
+                html += `<tr>
+                    <td style="font-weight: 600;">${p.clientName || '-'}</td>
+                    <td>${p.phone || '-'}</td>
+                    <td>${p.package || '-'}</td>
+                    <td>PKR ${(p.totalAmount || 0).toLocaleString()}</td>
+                    <td>PKR ${(p.amountReceived || 0).toLocaleString()}</td>
+                    <td>PKR ${(p.remainingBalance || 0).toLocaleString()}</td>
+                    <td><span class="status-badge ${statusClass}">${p.status || 'Pending'}</span></td>
+                    <td>${p.dueDate || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="editPayment('${p.id}')" class="action-btn" style="background: var(--primary-light); color: var(--primary);">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deletePayment('${p.id}')" class="action-btn" style="background: #fee2e2; color: var(--danger);">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // ========== SEARCH & FILTER ==========
+        async function searchRecords() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (!searchTerm) { loadAllPayments(); return; }
+
+            try {
+                const snapshot = await db.collection('payments').get();
+                const payments = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.clientName?.toLowerCase().includes(searchTerm) ||
+                        data.phone?.includes(searchTerm)) {
+                        payments.push({ id: doc.id, ...data });
+                    }
+                });
+                displayPayments(payments);
+            } catch (error) {
+                console.error('Search error:', error);
+            }
+        }
+
+        async function filterRecords() {
+            const filter = document.getElementById('filterDate').value;
+            if (filter === 'all') { loadAllPayments(); return; }
+
+            try {
+                const snapshot = await db.collection('payments').get();
+                const payments = [];
+                const today = new Date();
+                const weekAgo = new Date(today.setDate(today.getDate() - 7));
+                const monthAgo = new Date(today.setMonth(today.getMonth() - 1));
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const createdDate = new Date(data.createdAt);
+
+                    if (filter === 'today' && data.createdAt?.split('T')[0] === new Date().toISOString().split('T')[0]) {
+                        payments.push({ id: doc.id, ...data });
+                    } else if (filter === 'week' && createdDate >= weekAgo) {
+                        payments.push({ id: doc.id, ...data });
+                    } else if (filter === 'month' && createdDate >= monthAgo) {
+                        payments.push({ id: doc.id, ...data });
+                    }
+                });
+                displayPayments(payments);
+            } catch (error) {
+                console.error('Filter error:', error);
+            }
+        }
+
+        // ========== EDIT PAYMENT ==========
+        async function editPayment(id) {
+            editingId = id;
+            try {
+                const doc = await db.collection('payments').doc(id).get();
+                const data = doc.data();
+
+                document.getElementById('editFormContent').innerHTML = `
+                    <div class="form-group"><label>Client Name</label><input type="text" id="editClientName" value="${data.clientName || ''}" class="form-control"></div>
+                    <div class="form-group"><label>Phone</label><input type="text" id="editPhone" value="${data.phone || ''}" class="form-control"></div>
+                    <div class="form-group"><label>Total Amount</label><input type="number" id="editTotalAmount" value="${data.totalAmount || 0}" class="form-control"></div>
+                    <div class="form-group"><label>Amount Received</label><input type="number" id="editAmountReceived" value="${data.amountReceived || 0}" class="form-control"></div>
+                    <div class="form-group"><label>Status</label>
+                        <select id="editStatus" class="form-control">
+                            <option value="Paid" ${data.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                            <option value="Pending" ${data.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Partial" ${data.status === 'Partial' ? 'selected' : ''}>Partial</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Due Date</label><input type="date" id="editDueDate" value="${data.dueDate || ''}" class="form-control"></div>
+                `;
+
+                document.getElementById('editModal').style.display = 'flex';
+            } catch (error) {
+                alert('Error loading record');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            editingId = null;
+        }
+
+        async function updateRecord() {
+            if (!editingId) return;
+
+            const updateData = {
+                clientName: document.getElementById('editClientName').value,
+                phone: document.getElementById('editPhone').value,
+                totalAmount: parseFloat(document.getElementById('editTotalAmount').value) || 0,
+                amountReceived: parseFloat(document.getElementById('editAmountReceived').value) || 0,
+                status: document.getElementById('editStatus').value,
+                dueDate: document.getElementById('editDueDate').value,
+                updatedAt: new Date().toISOString()
+            };
+            updateData.remainingBalance = updateData.totalAmount - updateData.amountReceived;
+
+            try {
+                await db.collection('payments').doc(editingId).update(updateData);
+                alert('✅ Record updated!');
+                closeEditModal();
+                loadAllPayments();
+                loadDashboardData();
+            } catch (error) {
+                alert('Error updating: ' + error.message);
+            }
+        }
+
+        // ========== DELETE PAYMENT ==========
+        async function deletePayment(id) {
+            if (!confirm('⚠️ Delete this record?')) return;
+            try {
+                await db.collection('payments').doc(id).delete();
+                alert('✅ Deleted!');
+                loadAllPayments();
+                loadDashboardData();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ========== CLEAR FORMS ==========
+        function clearClientForm() {
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('totalAmount').value = '';
+            document.getElementById('amountReceived').value = '';
+            document.getElementById('remainingBalance').value = '';
+            document.getElementById('profit').value = '0';
+            document.getElementById('notes').value = '';
+            setDefaultDates();
+        }
+
+        function clearExpenseForm() {
+            document.getElementById('payTo').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseReason').value = '';
+            document.getElementById('expenseNotes').value = '';
+            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        // ========== INITIALIZE ==========
+        window.onload = function () {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').style.display = 'none';
+            setDefaultDates();
+        }
+    </script>
+</body>
+
+</html>
